@@ -10,7 +10,7 @@ from tkinter import *
 
 #inserir dados
 numero_processo = None
-qtd_volumes = None
+"""qtd_volumes = None
 
 def __init__():
     pass
@@ -46,18 +46,18 @@ botao = customtkinter.CTkButton(janela, text='Enviar', command=ok)
 botao.pack(padx=10, pady=10)
 
 janela.mainloop()
-
+"""
 pyautogui.alert('O código vai começar. Não utilize nada do computador até o código finalizar!')
 pyautogui.PAUSE = 1.0
 
 # Digitar número de processo no SIAT e consultar
-pyautogui.press('tab',presses=6)
+pyautogui.click(1482, 273)
+pyautogui.press('tab')
 pyautogui.write(str(numero_processo))
-pyautogui.click(1012, 254)
-time.sleep(1.0)
+pyautogui.press('enter')
 
 #selecionar o tipo de arquivo
-pyautogui.click(612, 543)
+pyautogui.press('tab', presses=2)
 pyautogui.press(['down', 'down'])
 pyautogui.press('enter')
 
