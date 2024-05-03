@@ -4,13 +4,13 @@ import mouseinfo
 import customtkinter
 from tkinter import *
 
+#coordenadas do mouse
 """while True:
     print(pyautogui.position())
     time.sleep(1) """    
 
 #inserir dados
 numero_processo = None
-qtd_volumes = None
 
 def __init__():
     pass
@@ -18,16 +18,13 @@ def ok():
     global numero_processo  # Indica que estamos utilizando a variável global
 
     processo = n_processo.get().strip()
-    volumes = qtd_volumes.get().strip()
         
-    if processo and volumes:  # Verifica se os campos não estão vazios
+    if processo:  # Verifica se os campos não estão vazios
         numero_processo = int(processo)  # Armazena o número do processo
         janela.destroy()
     else:
         if not processo:
             n_processo['bg'] = 'pink'
-        if not volumes:
-            qtd_volumes['bg'] = 'pink'
             print('Preencha todos os campos!')
 
 janela = customtkinter.CTk()
@@ -38,9 +35,6 @@ texto.pack(padx=10, pady=10)
 
 n_processo = customtkinter.CTkEntry(janela, placeholder_text='Número do Proceso')
 n_processo.pack(padx=10, pady=10)
-
-qtd_volumes = customtkinter.CTkEntry(janela, placeholder_text='Quantidade de volumes do processo')
-qtd_volumes.pack(padx=10, pady=10)
 
 botao = customtkinter.CTkButton(janela, text='Enviar', command=ok)
 botao.pack(padx=10, pady=10)
