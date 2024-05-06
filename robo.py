@@ -3,6 +3,7 @@ import time
 import mouseinfo
 import customtkinter
 from tkinter import *
+from tkinter import filedialog
 
 #coordenadas do mouse
 """while True:
@@ -11,14 +12,15 @@ from tkinter import *
 
 #inserir dados
 numero_processo = None
-
+arquivo_excel = None
 def __init__():
     pass
+def clique():
+    arquivo_excel = customtkinter(filedialog.askopenfilename())
 def ok():
     global numero_processo  # Indica que estamos utilizando a variável global
-
     processo = n_processo.get().strip()
-        
+
     if processo:  # Verifica se os campos não estão vazios
         numero_processo = int(processo)  # Armazena o número do processo
         janela.destroy()
@@ -35,6 +37,12 @@ texto.pack(padx=10, pady=10)
 
 n_processo = customtkinter.CTkEntry(janela, placeholder_text='Número do Proceso')
 n_processo.pack(padx=10, pady=10)
+
+texto = customtkinter.CTkLabel(janela, text='Escolha o arquivo Excel \ncom os caminhos dos processos')
+texto.pack(padx=10, pady=2)
+
+caminho_excel = customtkinter.CTkButton(janela, text='Abrir Arquivo', command=clique)
+caminho_excel.pack(padx=10, pady=10)
 
 botao = customtkinter.CTkButton(janela, text='Enviar', command=ok)
 botao.pack(padx=10, pady=10)
@@ -56,13 +64,20 @@ pyautogui.press('enter')
 pyautogui.press('tab', presses=2)
 pyautogui.press(['down', 'down'])
 
-#Fazer upload do arquivo """excel"""
+#Abrir arquivo "excel"
+pyautogui.hotkey('ctrl','o')
+time.sleep(1)
+pyautogui.write(clique)
+pyautogui.press('enter')
+
+#Selecionar arquivo processo
+
 
 #Salvar arquivo
 pyautogui.press('tab', presses=2)
 pyautogui.press('enter')
 
-#selecionar mais arquivos """excel"""
+#selecionar mais arquivos "excel"
 
 
 """for a in range(qtd_arquivos):
