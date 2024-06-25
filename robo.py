@@ -55,12 +55,9 @@ def selecionar_pasta():
         caminho_corrigido = pasta.replace("/", "\\")
 
 def executar_contagem():
-    if caminho_corrigido:
-        numero_de_pdfs = contar_pdfs(caminho_corrigido)
-        resultado_label.config(text=f"Número de arquivos PDF: {numero_de_pdfs}")
-    else:
-        resultado_label.config(text="Por favor, selecione uma pasta primeiro.")
-
+    caminho_corrigido
+    numero_de_pdfs = contar_pdfs(caminho_corrigido)
+    
 # Função para contar os arquivos PDF no diretório
 def contar_pdfs(diretorio):
     global contador_pdfs
@@ -94,119 +91,149 @@ def executar_tarefas():
     ok()
 
 def processar_processo(arquivo):
-    pyautogui.click(576, 540)
+
+    #selecionar tipo do processo
+    pyautogui.press('pagedown')
+    time.sleep(2)
+    pyautogui.click(722, 522)
+    time.sleep(2)
     pyautogui.press('down', presses=2)
     pyautogui.press('enter')
-    time.sleep(1)
-    pyautogui.click(451, 574)
-    time.sleep(1)
-    pyautogui.press('tab', presses=9)
+    time.sleep(2)
+    pyautogui.click(478, 572)
+    time.sleep(3)
+
+    #Selecionar pasta
+    pyautogui.press('tab', presses=5)
+    pyautogui.press('enter')
+    pyautogui.write(str(caminho_corrigido))
+    time.sleep(2)
+    pyautogui.press('right')
+    pyautogui.press('enter')
+
+
+    time.sleep(2)
+    #selecionar arquivos
+    pyautogui.press('tab', presses=4)
     pyautogui.press('down', presses=arquivo)
     pyautogui.press('space')
     pyautogui.press('enter')
     time.sleep(2)
-    pyautogui.press('tab', presses=2)
+    pyautogui.press('pagedown')
+    pyautogui.press('tab', presses=3)
     time.sleep(2)
     pyautogui.press('enter')
     time.sleep(3)
     pyautogui.press('enter')
     time.sleep(2)
 
-#Interface gráfica
-janela = customtkinter.CTk()
-janela.geometry('500x400')
-janela.resizable(False, False)
-texto = customtkinter.CTkLabel(janela, text='Enviar processos')
-texto.pack(padx=10, pady=10)
+def should_stop():
+        return pyautogui.position() == (0, 0)
 
-n_processo = customtkinter.CTkEntry(janela, placeholder_text='Ex: 2010.000000-0')
-n_processo.pack(padx=10, pady=10)
+while not should_stop():
+    #Interface gráfica
+    janela = customtkinter.CTk()
+    janela.geometry('500x400')
+    janela.resizable(False, False)
+    texto = customtkinter.CTkLabel(janela, text='Enviar processos')
+    texto.pack(padx=10, pady=10)
 
-texto = customtkinter.CTkLabel(janela, text='Escolha o caminho com os arquivos do processo')
-texto.pack(padx=10, pady=2)
+    n_processo = customtkinter.CTkEntry(janela, placeholder_text='Ex: 2010.000000-0')
+    n_processo.pack(padx=10, pady=10)
 
-caminho_processo = customtkinter.CTkButton(janela, text='Selecione a Pasta', command=selecionar_pasta)
-caminho_processo.pack(padx=10, pady=10)
+    texto = customtkinter.CTkLabel(janela, text='Escolha o caminho com os arquivos do processo')
+    texto.pack(padx=10, pady=2)
 
-caminho_entry = customtkinter.CTkEntry(janela, width=360)
-caminho_entry.pack(padx=40, pady=10)
+    caminho_processo = customtkinter.CTkButton(janela, text='Selecione a Pasta', command=selecionar_pasta)
+    caminho_processo.pack(padx=10, pady=10)
 
-resultado_label = tk.Label(janela, text="")
-resultado_label.pack(padx=10, pady=10)
+    caminho_entry = customtkinter.CTkEntry(janela, width=360)
+    caminho_entry.pack(padx=40, pady=10)
 
-botao = customtkinter.CTkButton(janela, text='Enviar', command=executar_tarefas)
-botao.pack(padx=10, pady=10)
+    botao = customtkinter.CTkButton(janela, text='Enviar', command=executar_tarefas)
+    botao.pack(padx=10, pady=10)
 
-janela.mainloop()
+    janela.mainloop()
 
-#Alerta para o código começar
-pyautogui.alert('O código vai começar. Não utilize nada do computador até o código finalizar!')
-time.sleep(2)
+    #Alerta para o código começar
+    pyautogui.alert('O código vai começar. Não utilize nada do computador até o código finalizar!')
+    time.sleep(2)
 
-#Digitar número de processo no SIAT e consultar
-pyautogui.click(529, 225)
-pyautogui.press('tab')
-pyautogui.write(str(numero_processo))
-pyautogui.press('tab')
-pyautogui.press('enter')
-time.sleep(2)
+    #Digitar número de processo no SIAT e consultar
+    pyautogui.click(630, 238)
+    time.sleep(2)
+    pyautogui.press('tab')                            
+    pyautogui.write(str(numero_processo))
+    pyautogui.press('tab')
+    pyautogui.press('enter')
+    time.sleep(2)      
 
-#abrir arquivo explorar
-pyautogui.press('win')
-time.sleep(1)
-pyautogui.write('explorar')
-pyautogui.press('enter')
-time.sleep(3)
-
-#Digitar caminho excel
-pyautogui.press('tab',presses=4)
-pyautogui.press('enter')
-time.sleep(1)
-pyautogui.write(r'\\suecia.pmjg.lan\serec\0 - COMPARTILHAMENTO SEREC\PROCESSOS ESCANEADOS E RENUMERADOS')
-pyautogui.press('enter')
-time.sleep(1)
-
-#Buscar Excel com os processos
-pyautogui.press('tab', presses=7)
-pyautogui.write('xlsx')
-time.sleep(2)
-pyautogui.press('tab', presses=2)
-pyautogui.press('space')
-pyautogui.press('enter')
-time.sleep(8)
-
-#Pesquisar processo
-pyautogui.hotkey('ctrl', 'l')
-time.sleep(1)
-pyautogui.write(str(processo))
-pyautogui.press('enter')
-time.sleep(2)
-pyautogui.press('tab', presses=4)
-pyautogui.press('enter')
-
-#Pegar tipo processo
-time.sleep(2)
-pyautogui.press('right', presses=3)
-pyautogui.hotkey('ctrl', 'c')
-time.sleep(1)
-
-pyautogui.getWindowsWithTitle("Excel")[0].minimize()
-pyautogui.getWindowsWithTitle("PROCESSOS ESCANEADOS E RENUMERADOS")[0].minimize()
-time.sleep(2)        
-
-# Obtém o valor copiado para a área de transferência
-tipo_do_processo = pyperclip.paste()
-print(tipo_do_processo)
-# Imprime o valor após a substituição
-tipo_do_processo_normalizado = normalizar_texto(tipo_do_processo)
-
-print(tipo_do_processo_normalizado)
-print(contador_pdfs)
-
-# Execução do processo baseado no tipo de processo
-tipo_do_processo_normalizado == 'auto de infracao':
-print("Processo é 'auto de infracao'")
-for arquivo in range(contador_pdfs):
-    processar_processo(arquivo)
+    # Execução do processo baseado no tipo de processo
+    for arquivo in range(contador_pdfs):
+        processar_processo(arquivo)
 
 pyautogui.alert('Todos os arquivos foram enviados com sucesso!')
+
+#minimizar consulta de pasta e excel
+"""    pyautogui.getWindowsWithTitle("Excel")[0].minimize()
+    pyautogui.getWindowsWithTitle("PROCESSOS ESCANEADOS E RENUMERADOS")[0].minimize()
+    time.sleep(2)"""  
+
+# Execução do processo baseado no tipo de processo
+"""
+    # Obtém o valor copiado para a área de transferência
+    tipo_do_processo = pyperclip.paste()
+    print(tipo_do_processo)
+    # Imprime o valor após a substituição
+    tipo_do_processo_normalizado = normalizar_texto(tipo_do_processo)
+
+    print(tipo_do_processo_normalizado)
+    print(contador_pdfs)
+
+    if tipo_do_processo_normalizado == 'auto de infracao':
+        print("Processo é 'auto de infracao'")
+        for arquivo in range(contador_pdfs):
+            processar_processo(arquivo)
+    else:
+        pyautogui.alert('Tipo do processo não encontrado')"""
+
+#Arquivos com tipos diferentes
+"""    #abrir arquivo explorar
+    pyautogui.press('win')
+    time.sleep(1)
+    pyautogui.write('explorar')
+    pyautogui.press('enter')
+    time.sleep(3)
+
+    #Digitar caminho excel
+    pyautogui.press('tab',presses=4)
+    pyautogui.press('enter')
+    time.sleep(1)
+    pyautogui.write(r'\\suecia.pmjg.lan\serec\0 - COMPARTILHAMENTO SEREC\PROCESSOS ESCANEADOS E RENUMERADOS')
+    pyautogui.press('enter')
+    time.sleep(1)
+
+    #Buscar Excel com os processos
+    pyautogui.press('tab', presses=7)
+    pyautogui.write('xlsx')
+    time.sleep(2)
+    pyautogui.press('tab', presses=2)
+    pyautogui.press('space')
+    pyautogui.press('enter')
+    time.sleep(8)
+
+    #Pesquisar processo
+    pyautogui.hotkey('ctrl', 'l')
+    time.sleep(1)
+    pyautogui.write(str(processo))
+    pyautogui.press('enter')
+    time.sleep(2)
+    pyautogui.press('tab', presses=4)
+    pyautogui.press('enter')
+
+    #Pegar tipo processo
+    time.sleep(2)
+    pyautogui.press('right', presses=3)
+    pyautogui.hotkey('ctrl', 'c')
+    time.sleep(1)
+"""
