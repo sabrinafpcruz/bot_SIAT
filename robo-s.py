@@ -1,34 +1,52 @@
 import pyautogui
 import time
-import mouseinfo
 import customtkinter
 import tkinter as tk
 from tkinter import filedialog
-import pyperclip
 import os
 import pygetwindow as gw
+from selenium import webdriver
+import asyncio
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+servico = Service(ChromeDriverManager().install())
+navegador = webdriver.Chrome(service=servico)
 
 "2013.000195-8"
 "Auto de Infração"
 "AUTO DE INFRAÇÃO"
 "NOTIFICAÇÃO"
 
-#coordenadas do mouse
-"""while True:
-    print(pyautogui.position())
-    time.sleep(1)        
-"""
-"""
-print("Janelas encontradas:")
-for window in gw.getAllTitles():
-    print(window)
-"""
 # Variáveis globais
 arquivo_excel = None
 valor_selecionado = ""
 contador_pdfs = 0
 caminho_corrigido = ""
 tipo_do_processo_normalizado = ""
+
+navegador = webdriver.Chrome()
+navegador.get("https://www.tinus.com.br/csp/JABOATAO/SIAT.csp")
+
+navegador.find_element(By.XPATH, '/html/body/form/div[2]/fieldset[1]/table/tbody/tr[1]/td[2]/input[1]').send_keys()
+
+def wait_for_user_to_resolve_login(driver):
+    pyautogui.alert("Por favor, faça o login e insira a senha do SIAT")
+
+    # Função para verificar a presença do elemento de forma assíncrona
+    async def check_element_presence():
+        while True:
+            try:
+                driver.find_element(By.XPATH, '/html/body/form/div[2]/table[1]/tbody/tr[1]/td/input')
+                return
+            except:
+                await asyncio.sleep(1)  # Espera 1 segundo antes de verificar novamente
+
+        await asyncio.wait_for(check_element_presence(), timeout=300)
+    print("Login realizado.")
 
 def normalizar_texto(texto):
     substituicoes = {
@@ -89,6 +107,7 @@ def ok():
 def executar_tarefas():
     executar_contagem()
     ok()
+
 
 def primeiro_processar_processo(arquivo):
     #selecionar tipo do processo
@@ -205,6 +224,7 @@ while not should_stop():
             processar_processo(arquivo)
 
 pyautogui.alert('Todos os arquivos foram enviados com sucesso!')
+
 
 #minimizar consulta de pasta e excel
 """    pyautogui.getWindowsWithTitle("Excel")[0].minimize()
