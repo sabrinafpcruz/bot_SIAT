@@ -1,25 +1,33 @@
+import asyncio
+from lib2to3.pgen2 import driver
 import pyautogui
 import time
-import customtkinter
-import tkinter as tk
-from tkinter import filedialog
-import os
-import pygetwindow as gw
-from selenium import webdriver
-import asyncio
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
-servico = Service(ChromeDriverManager().install())
-navegador = webdriver.Chrome(service=servico)
+driver = webdriver.Chrome()
 
-"2013.000195-8"
-"Auto de Infração"
-"AUTO DE INFRAÇÃO"
-"NOTIFICAÇÃO"
+driver.get("https://www.tinus.com.br/csp/JABOATAO/SIAT.csp")
+
+time.sleep(5)
+
+iframe = driver.find_element(By.XPATH, '//iframe[@src="login.csp?PM=JAB"]')
+
+driver.switch_to.frame(iframe)
+
+try:
+    elemento = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "txtMatricula"))
+    )
+    elemento.send_keys("12345")
+finally:
+    driver.quit()
+
 
 # Variáveis globais
 arquivo_excel = None
@@ -28,204 +36,11 @@ contador_pdfs = 0
 caminho_corrigido = ""
 tipo_do_processo_normalizado = ""
 
-navegador = webdriver.Chrome()
-navegador.get("https://www.tinus.com.br/csp/JABOATAO/SIAT.csp")
-
-navegador.find_element(By.XPATH, '/html/body/form/div[2]/fieldset[1]/table/tbody/tr[1]/td[2]/input[1]').send_keys()
-
-def wait_for_user_to_resolve_login(driver):
-    pyautogui.alert("Por favor, faça o login e insira a senha do SIAT")
-
-    # Função para verificar a presença do elemento de forma assíncrona
-    async def check_element_presence():
-        while True:
-            try:
-                driver.find_element(By.XPATH, '/html/body/form/div[2]/table[1]/tbody/tr[1]/td/input')
-                return
-            except:
-                await asyncio.sleep(1)  # Espera 1 segundo antes de verificar novamente
-
-        await asyncio.wait_for(check_element_presence(), timeout=300)
-    print("Login realizado.")
-
-def normalizar_texto(texto):
-    substituicoes = {
-        "Ç": "c", "Ã": "a", "Á": "a", "É": "e", "Í": "i", "Ó": "o", "Ú": "u",
-        "Â": "a", "Ê": "e", "Î": "i", "Ô": "o", "Û": "u", "À": "a", "È": "e",
-        "Ì": "i", "Ò": "o", "Ù": "u", "Ä": "a", "Ë": "e", "Ï": "i", "Ö": "o",
-        "Ü": "u", "Ÿ": "y", "Ý": "y", "ç": "c", "ã": "a", "á": "a", "é": "e",
-        "í": "i", "ó": "o", "ú": "u", "â": "a", "ê": "e", "î": "i", "ô": "o",
-        "û": "u", "à": "a", "è": "e", "ì": "i", "ò": "o", "ù": "u", "ä": "a",
-        "ë": "e", "ï": "i", "ö": "o", "ü": "u", "ÿ": "y", "ý": "y"
-    }
-    texto_normalizado = texto
-    for chave, valor in substituicoes.items():
-        texto_normalizado = texto_normalizado.replace(chave, valor)
-    return texto_normalizado
-
-def selecionar_pasta():
-    global caminho_corrigido, pasta
-    pasta = filedialog.askdirectory(title="Selecione uma pasta")
-    if pasta:
-        caminho_entry.delete(0, tk.END)
-        caminho_entry.insert(0, pasta)
-        # Substituir barras por barras invertidas
-        caminho_corrigido = pasta.replace("/", "\\")
-
-def executar_contagem():
-    caminho_corrigido
-    numero_de_pdfs = contar_pdfs(caminho_corrigido)
-    
-# Função para contar os arquivos PDF no diretório
-def contar_pdfs(diretorio):
-    global contador_pdfs
-    contador_pdfs = 0
-
-    for root, dirs, files in os.walk(diretorio):
-        for file in files:
-            if file.lower().endswith('.pdf'):
-                contador_pdfs += 1
-
-def remover_caracteres(string_original):
-    caracteres_indesejados = "-."
-    for char in caracteres_indesejados:
-        string_original = string_original.replace(char, '')
-    return string_original
-
-def ok():
-    global numero_processo, processo  # Indica que estamos utilizando a variável global
-    processo = n_processo.get().strip()
-
-    if processo:  # Verifica se os campos não estão vazios
-        numero_processo = int(remover_caracteres(processo))  # Armazena o número do processo
-        janela.destroy()
-    else:
-        if not processo:
-            numero_processo['bg'] = 'pink'
-            print('Preencha todos os campos!')
-
-def executar_tarefas():
-    executar_contagem()
-    ok()
-
-
-def primeiro_processar_processo(arquivo):
-    #selecionar tipo do processo
-    pyautogui.press('pagedown')
-    time.sleep(2)
-    pyautogui.click(722, 522)
-    time.sleep(2)
-    pyautogui.press('down', presses=2)
-    pyautogui.press('enter')
-    time.sleep(2)
-    pyautogui.click(478, 572)
-    time.sleep(3)
-
-    #Selecionar pasta
-    pyautogui.press('tab', presses=5)
-    pyautogui.press('enter')
-    print(pasta)
-    pyautogui.write(rf"{caminho_corrigido}")
-    time.sleep(2)
-    pyautogui.press('right')
-    pyautogui.press('enter')
-
-
-    time.sleep(2)
-    #selecionar arquivos
-    pyautogui.press('tab', presses=4)
-    pyautogui.press('down', presses=arquivo)
-    pyautogui.press('space')
-    pyautogui.press('enter')
-    time.sleep(2)
-    pyautogui.press('pagedown')
-    pyautogui.press('tab', presses=3)
-    time.sleep(2)
-    pyautogui.press('enter')
-    time.sleep(3)
-    pyautogui.press('enter')
-    time.sleep(2)
-
-
-def processar_processo(arquivo):
-
-    #selecionar tipo do processo
-    pyautogui.press('pagedown')
-    time.sleep(2)
-    pyautogui.click(722, 522)
-    time.sleep(2)
-    pyautogui.press('down', presses=2)
-    pyautogui.press('enter')
-    time.sleep(2)
-    pyautogui.click(478, 572)
-    time.sleep(3)
-
-    time.sleep(2)
-    #selecionar arquivos
-    pyautogui.press('tab', presses=9)
-    pyautogui.press('down', presses=arquivo)
-    pyautogui.press('space')
-    pyautogui.press('enter')
-    time.sleep(2)
-    pyautogui.press('pagedown')
-    pyautogui.press('tab', presses=3)
-    time.sleep(2)
-    pyautogui.press('enter')
-    time.sleep(3)
-    pyautogui.press('enter')
-    time.sleep(2)
-
-def should_stop():
-        return pyautogui.position() == (0, 0)
-
-while not should_stop():
-    #Interface gráfica
-    janela = customtkinter.CTk()
-    janela.geometry('500x400')
-    janela.resizable(False, False)
-    texto = customtkinter.CTkLabel(janela, text='Enviar processos')
-    texto.pack(padx=10, pady=10)
-
-    n_processo = customtkinter.CTkEntry(janela, placeholder_text='Ex: 2010.000000-0')
-    n_processo.pack(padx=10, pady=10)
-
-    texto = customtkinter.CTkLabel(janela, text='Escolha o caminho com os arquivos do processo')
-    texto.pack(padx=10, pady=2)
-
-    caminho_processo = customtkinter.CTkButton(janela, text='Selecione a Pasta', command=selecionar_pasta)
-    caminho_processo.pack(padx=10, pady=10)
-
-    caminho_entry = customtkinter.CTkEntry(janela, width=360)
-    caminho_entry.pack(padx=40, pady=10)
-
-    botao = customtkinter.CTkButton(janela, text='Enviar', command=executar_tarefas)
-    botao.pack(padx=10, pady=10)
-
-    janela.mainloop()
-
-    #Alerta para o código começar
-    pyautogui.alert('O código vai começar. Não utilize nada do computador até o código finalizar!')
-    time.sleep(2)
-
-    #Digitar número de processo no SIAT e consultar
-    pyautogui.click(630, 238)
-    time.sleep(2)
-    pyautogui.press('tab')                            
-    pyautogui.write(str(numero_processo))
-    pyautogui.press('tab')
-    pyautogui.press('enter')
-    time.sleep(2)      
-
-    # Execução do processo baseado no tipo de processo
-    for arquivo in range(contador_pdfs):
-        if arquivo == 0:
-            primeiro_processar_processo(arquivo)
-        else:
-            processar_processo(arquivo)
-
-pyautogui.alert('Todos os arquivos foram enviados com sucesso!')
-
-
+"""# Encontre os campos de entrada de nome de usuário e senha (substitua 'nome_campo' pelos nomes reais dos campos)
+campo_usuario = driver.find_element(By.XPATH, '/html/body/form/div[2]/table[1]/tbody/tr[1]/td/input').send_keys("12345")
+campo_senha = driver.find_element(By.XPATH, '/html/body/form/div[2]/table[1]/tbody/tr[2]/td/input').send_keys("12345")
+"""
+pyautogui.alert("Arquivos enviados")
 #minimizar consulta de pasta e excel
 """    pyautogui.getWindowsWithTitle("Excel")[0].minimize()
     pyautogui.getWindowsWithTitle("PROCESSOS ESCANEADOS E RENUMERADOS")[0].minimize()

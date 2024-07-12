@@ -1,33 +1,32 @@
-import tkinter as tk
-from tkinter import filedialog
-import pyautogui
-import pyperclip
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-def selecionar_pasta():
-    pasta = filedialog.askdirectory(title="Selecione uma pasta")
-    if pasta:
-        caminho_entry.delete(0, tk.END)
-        caminho_entry.insert(0, pasta)
-        pyperclip.copy(pasta)
+driver = webdriver.Chrome()
 
-def colar_caminho():
-    pyautogui.hotkey('ctrl', 'v')
+try:
+    driver.get("https://www.tinus.com.br/csp/JABOATAO/SIAT.csp")
 
-# Configuração da janela principal
-root = tk.Tk()
-root.title("Selecionar Pasta e Colar Caminho")
-root.geometry("500x150")
+    # Listar todos os iframes na página
+    iframes = driver.find_elements(By.TAG_NAME, "iframe")
+    print(f"Número de iframes encontrados: {len(iframes)}")
 
-# Botão para selecionar a pasta
-botao_selecionar = tk.Button(root, text="Selecionar Pasta", command=selecionar_pasta)
-botao_selecionar.pack(pady=10)
+    # Tentar alternar para cada iframe e procurar pelo elemento
+    for iframe in iframes:
+        driver.switch_to.frame(iframe)
+        try:
+            WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//*[@id='Pagina']"))
+            )
+            print("Tela de login detectada no iframe.")
+            break
+        except:
+            print("Elemento não encontrado neste iframe.")
+            driver.switch_to.default_content()  # Voltar para o conteúdo principal
 
-# Campo de entrada para exibir o caminho da pasta
-caminho_entry = tk.Entry(root, width=60)
-caminho_entry.pack(pady=10)
-
-# Botão para colar o caminho
-botao_colar = tk.Button(root, text="Colar Caminho", command=colar_caminho)
-botao_colar.pack(pady=10)
-
-root.mainloop()
+except Exception as e:
+    print("Tela de login não encontrada.")
+    print(e)
+finally:
+    driver.quit()

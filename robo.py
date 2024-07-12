@@ -121,9 +121,9 @@ def primeiro_processar_processo(arquivo):
     time.sleep(2)
     pyautogui.press('pagedown')
     pyautogui.press('tab', presses=3)
-    time.sleep(2)
+    time.sleep(5)
     pyautogui.press('enter')
-    time.sleep(3)
+    time.sleep(5)
     pyautogui.press('enter')
     time.sleep(2)
 
@@ -150,9 +150,9 @@ def processar_processo(arquivo):
     time.sleep(2)
     pyautogui.press('pagedown')
     pyautogui.press('tab', presses=3)
-    time.sleep(2)
+    time.sleep(5)
     pyautogui.press('enter')
-    time.sleep(3)
+    time.sleep(5)
     pyautogui.press('enter')
     time.sleep(2)
 
