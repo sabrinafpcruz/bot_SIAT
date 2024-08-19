@@ -46,7 +46,7 @@ def normalizar_texto(texto):
     return texto_normalizado
 
 def selecionar_pasta():
-    global caminho_corrigido
+    global caminho_corrigido, pasta
     pasta = filedialog.askdirectory(title="Selecione uma pasta")
     if pasta:
         caminho_entry.delete(0, tk.END)
@@ -55,7 +55,6 @@ def selecionar_pasta():
         caminho_corrigido = pasta.replace("/", "\\")
 
 def executar_contagem():
-    caminho_corrigido
     numero_de_pdfs = contar_pdfs(caminho_corrigido)
     
 # Função para contar os arquivos PDF no diretório
@@ -83,30 +82,38 @@ def ok():
         janela.destroy()
     else:
         if not processo:
-            numero_processo['bg'] = 'pink'
+            numero_processo['bg'] = 'pink' # type: ignore
             print('Preencha todos os campos!')
 
 def executar_tarefas():
     executar_contagem()
     ok()
 
-def processar_processo(arquivo):
-
+def primeiro_processar_processo(arquivo):
     #selecionar tipo do processo
-    pyautogui.press('pagedown')
     time.sleep(2)
-    pyautogui.click(722, 522)
+    #clique diferente
+    #pyautogui.click(731, 667)
+
+    #clique normal
+    pyautogui.click(744, 537)
     time.sleep(2)
     pyautogui.press('down', presses=2)
     pyautogui.press('enter')
     time.sleep(2)
+    
+    #clique diferente
+    #pyautogui.click(523, 706)
+
+    #clique normal
     pyautogui.click(478, 572)
     time.sleep(3)
 
     #Selecionar pasta
     pyautogui.press('tab', presses=5)
     pyautogui.press('enter')
-    pyautogui.write(str(caminho_corrigido))
+    print(pasta)
+    pyautogui.write(rf"{caminho_corrigido}")
     time.sleep(2)
     pyautogui.press('right')
     pyautogui.press('enter')
@@ -119,11 +126,45 @@ def processar_processo(arquivo):
     pyautogui.press('space')
     pyautogui.press('enter')
     time.sleep(2)
-    pyautogui.press('pagedown')
     pyautogui.press('tab', presses=3)
-    time.sleep(2)
+    time.sleep(5)
     pyautogui.press('enter')
+    time.sleep(5)
+    pyautogui.press('enter')
+    time.sleep(2)
+
+
+def processar_processo(arquivo):
+
+    #selecionar tipo do processo
+    time.sleep(2)
+    #clique diferente
+    #pyautogui.click(731, 667)
+
+    #clique normal
+    pyautogui.click(744, 537)
+    time.sleep(2)
+    pyautogui.press('down', presses=2)
+    pyautogui.press('enter')
+    time.sleep(2)
+    #clique diferente
+    #pyautogui.click(523, 706)
+
+    #clique normal
+    pyautogui.click(478, 572)
     time.sleep(3)
+
+    time.sleep(2)
+    #selecionar arquivos
+    pyautogui.press('tab', presses=9)
+    pyautogui.press('down', presses=arquivo)
+    pyautogui.press('space')
+    pyautogui.press('enter')
+    time.sleep(2)
+    pyautogui.press('tab', presses=3)
+    time.sleep(5)
+    pyautogui.press('enter')
+    time.sleep(5)
     pyautogui.press('enter')
     time.sleep(2)
 
@@ -156,7 +197,7 @@ while not should_stop():
     janela.mainloop()
 
     #Alerta para o código começar
-    pyautogui.alert('O código vai começar. Não utilize nada do computador até o código finalizar!')
+    pyautogui.alert('O código vai começar. Não utilize nada do computador até o código finalizar!') # type: ignore
     time.sleep(2)
 
     #Digitar número de processo no SIAT e consultar
@@ -170,9 +211,12 @@ while not should_stop():
 
     # Execução do processo baseado no tipo de processo
     for arquivo in range(contador_pdfs):
-        processar_processo(arquivo)
+        if arquivo == 0:
+            primeiro_processar_processo(arquivo)
+        else:
+            processar_processo(arquivo)
 
-pyautogui.alert('Todos os arquivos foram enviados com sucesso!')
+pyautogui.alert('Todos os arquivos foram enviados com sucesso!') # type: ignore
 
 #minimizar consulta de pasta e excel
 """    pyautogui.getWindowsWithTitle("Excel")[0].minimize()
@@ -197,7 +241,7 @@ pyautogui.alert('Todos os arquivos foram enviados com sucesso!')
     else:
         pyautogui.alert('Tipo do processo não encontrado')"""
 
-#Arquivos com tipos diferentes
+# type: ignore # type: ignore #Arquivos com tipos diferentes
 """    #abrir arquivo explorar
     pyautogui.press('win')
     time.sleep(1)
