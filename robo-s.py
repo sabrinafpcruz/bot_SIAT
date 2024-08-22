@@ -1,20 +1,12 @@
 import os
-import select
 import time
-import ctypes
-import mouseinfo
 import pyautogui
 import customtkinter
-import tkinter as tk
-import pygetwindow as gw
 from selenium import webdriver
 from tkinter import filedialog
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.select import Select
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
@@ -47,7 +39,7 @@ def selecionar_pasta():
     global caminho_corrigido, pasta
     pasta = filedialog.askdirectory(title="Selecione uma pasta")
     if pasta:
-        caminho_entry.delete(0, tk.END)
+        caminho_entry.delete(0, customtkinter.END)
         caminho_entry.insert(0, pasta)
         # Substituir barras por barras invertidas
         caminho_corrigido = pasta.replace("/", "\\")
