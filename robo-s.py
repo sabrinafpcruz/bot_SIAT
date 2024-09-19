@@ -74,10 +74,12 @@ def ok():
         if not processo: 
             print('Preencha todos os campos!')
 
+# Função que executa as funções de contar os arquivos(pdfs) e confirmar os dados da interface gráfica ao mesmo tempo
 def executar_tarefas():
     executar_contagem()
     ok()
 
+# Função para consultar e enviar o primeiro arquivo do processo
 def primeiro_processar_processo(arquivo):
     driver.find_element(By.XPATH, '//*[@id="cboTpDocu"]').click()
     time.sleep(2)
@@ -128,6 +130,7 @@ def primeiro_processar_processo(arquivo):
     except:
         pass  # Não há alerta ou ocorreu um erro ao tentar capturar o alerta
 
+# Função que processa os arquivos e envia para o ambiente web
 def processar_processo(arquivo):
     time.sleep(3)
     driver.find_element(By.XPATH, '//*[@id="cboTpDocu"]').click()
@@ -167,61 +170,64 @@ def processar_processo(arquivo):
     except:
         pass  # Não há alerta ou ocorreu um erro ao tentar capturar o alerta
 
-
+# Função que decta localização do mouse no topo da esquerda
 def should_stop():
         return pyautogui.position() == (0, 0)
 
-driver.get("https://www.tinus.com.br/csp/JABOATAO/SIAT.csp")
-
-time.sleep(10)
-
-iframe_login = driver.find_element(By.XPATH, '//iframe[@src="login.csp?PM=JAB"]')
-driver.switch_to.frame(iframe_login)
-
-while login == True:
-    try:
-        driver.switch_to.default_content()
-        iframe_SIAT = driver.find_element(By.XPATH, '//iframe[@id="iFrame2"]')
-        driver.switch_to.frame(iframe_SIAT)
-
-        elemento = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, '//*[@id="loginTable"]/tbody/tr[6]/td[1]/div[1]/a/img'))
-        )
-        print("O elemento foi encontrado, o usuário fez login com sucesso!")
-        login = False
-    except:
-        print("O elemento não foi encontrado, verificando novamente...")
-        driver.switch_to.default_content()
-        driver.switch_to.frame(iframe_login)
-        time.sleep(5)
-
-time.sleep(1)
-driver.switch_to.default_content()
-iframe2 = driver.find_element(By.XPATH, '//iframe[@id="iFrame2"]')
-driver.switch_to.frame(iframe_SIAT)
-
-time.sleep(1)
-iframe_menu = driver.find_element(By.XPATH, '//iframe[@src="menu.csp?PM=JAB"]')
-driver.switch_to.frame(iframe_menu)
-driver.find_element(By.XPATH, '/html/body/form/div[2]/li[6]/span').click()
-
-time.sleep(1)
-driver.find_element(By.XPATH, '/html/body/form/div[2]/ul[7]/table/tbody/tr/td/li[2]').click()
-
-time.sleep(1)
-driver.find_element(By.XPATH, '/html/body/form/div[2]/ul[7]/table/tbody/tr/td/ul[2]/li[4]/a').click()
-
-time.sleep(1)
-driver.find_element(By.XPATH, '/html/body/form/div[2]/ul[7]/table/tbody/tr/td/ul[2]/li[4]/a').click()
-driver.switch_to.default_content()
-
-iframe2 = driver.find_element(By.XPATH, '//iframe[@id="iFrame2"]')
-driver.switch_to.frame(iframe_SIAT)
-
-iframe_processos = driver.find_element(By.XPATH, '//iframe[@src="main.csp"]')
-driver.switch_to.frame(iframe_processos)
-
 while not should_stop():
+    # Início do selenium e ambiente
+    driver.get("https://www.tinus.com.br/csp/JABOATAO/SIAT.csp")
+
+    time.sleep(10)
+
+    iframe_login = driver.find_element(By.XPATH, '//iframe[@src="login.csp?PM=JAB"]')
+    driver.switch_to.frame(iframe_login)
+
+    # Looping para conferir e confirma se o usuário fez o login na página web
+    while login == True:
+        try:
+            driver.switch_to.default_content()
+            iframe_SIAT = driver.find_element(By.XPATH, '//iframe[@id="iFrame2"]')
+            driver.switch_to.frame(iframe_SIAT)
+
+            elemento = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, '//*[@id="loginTable"]/tbody/tr[6]/td[1]/div[1]/a/img'))
+            )
+            print("O elemento foi encontrado, o usuário fez login com sucesso!")
+            login = False
+        except:
+            print("O elemento não foi encontrado, verificando novamente...")
+            driver.switch_to.default_content()
+            driver.switch_to.frame(iframe_login)
+            time.sleep(5)
+
+    # 
+    time.sleep(1)
+    driver.switch_to.default_content()
+    iframe2 = driver.find_element(By.XPATH, '//iframe[@id="iFrame2"]')
+    driver.switch_to.frame(iframe_SIAT)
+
+    time.sleep(1)
+    iframe_menu = driver.find_element(By.XPATH, '//iframe[@src="menu.csp?PM=JAB"]')
+    driver.switch_to.frame(iframe_menu)
+    driver.find_element(By.XPATH, '/html/body/form/div[2]/li[6]/span').click()
+
+    time.sleep(1)
+    driver.find_element(By.XPATH, '/html/body/form/div[2]/ul[7]/table/tbody/tr/td/li[2]').click()
+
+    time.sleep(1)
+    driver.find_element(By.XPATH, '/html/body/form/div[2]/ul[7]/table/tbody/tr/td/ul[2]/li[4]/a').click()
+
+    time.sleep(1)
+    driver.find_element(By.XPATH, '/html/body/form/div[2]/ul[7]/table/tbody/tr/td/ul[2]/li[4]/a').click()
+    driver.switch_to.default_content()
+
+    iframe2 = driver.find_element(By.XPATH, '//iframe[@id="iFrame2"]')
+    driver.switch_to.frame(iframe_SIAT)
+
+    iframe_processos = driver.find_element(By.XPATH, '//iframe[@src="main.csp"]')
+    driver.switch_to.frame(iframe_processos)
+
     input_element = driver.find_element(By.ID, "txtProc")
     current_title = input_element.get_attribute("title")
     expected_title = "Número do Processo formato <aaaannnnnnd>"
